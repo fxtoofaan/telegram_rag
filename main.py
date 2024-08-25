@@ -79,7 +79,7 @@ def create_vectordb(url):
     return vectordb
 
 
-create_vectordb(url_vendasta)
+vectordb= create_vectordb(url_vendasta)
 
 def stand_alone(prompt, memory):
     prompt_chat = PromptTemplate(
@@ -207,7 +207,7 @@ def generate_response_chat(message_list, memory):
         stand_alone_question = stand_alone(message_list, memory)
         print("\n\nstand alone question\n")
         print(stand_alone_question)
-        docs = VectorSearchTools_chroma.dbsearch(stand_alone_question)
+        docs = vectordb.similarity_search(stand_alone_question)#VectorSearchTools_chroma.dbsearch(stand_alone_question)
         updated_content = last_message["content"] + "\n\n"
         
         
