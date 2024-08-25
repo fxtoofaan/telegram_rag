@@ -9,7 +9,7 @@ SpeechRecognition
 gTTS
 pydub
 pypdf
-
+streamlit
 beautifulsoup4==4.12.3
 termcolor==2.4.0
 

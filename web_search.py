@@ -37,7 +37,7 @@ def extract_url(web_str):
     else:
         return None
 
-def scrape_website(url: str, base_domain: str, max_retries: int = 3, backoff_factor: float = 0.3, timeout: int = 10) -> dict:
+def scrape_new_website(url: str, base_domain: str, max_retries: int = 3, backoff_factor: float = 0.3, timeout: int = 10) -> dict:
     headers = {'User-Agent': get_random_user_agent()}
     session = requests.Session()
     # Extract the URL
@@ -69,7 +69,7 @@ def scrape_website(url: str, base_domain: str, max_retries: int = 3, backoff_fac
             return {
                 "source": url,
                 "content": text,
-                "links": sublinks[:20]
+                "links": sublinks[:2]
             }
         
         except requests.RequestException as e:
@@ -82,7 +82,7 @@ def scrape_website(url: str, base_domain: str, max_retries: int = 3, backoff_fac
                 time.sleep(backoff_factor * (2 ** attempt))
                 continue
 
-def get_links_and_text(url: str, max_depth: int = 2, max_retries: int = 3, backoff_factor: float = 0.3, timeout: int = 10):
+def get_links_and_text_new(url: str, max_depth: int = 2, max_retries: int = 3, backoff_factor: float = 0.3, timeout: int = 10):
     visited_urls = set()
     results = []
 
@@ -92,7 +92,7 @@ def get_links_and_text(url: str, max_depth: int = 2, max_retries: int = 3, backo
 
         visited_urls.add(url)
         base_domain = urlparse(url).netloc
-        result = scrape_website(url, base_domain, max_retries, backoff_factor, timeout)
+        result = scrape_new_website(url, base_domain, max_retries, backoff_factor, timeout)
         
         if "error" not in result:
             results.append({"source": result["source"], "content": result["content"]})
@@ -105,47 +105,3 @@ def get_links_and_text(url: str, max_depth: int = 2, max_retries: int = 3, backo
 
 
 
-
-async def add_docs(vectordb, docs):
-    await vectordb.aadd_documents(documents=docs)
-
-
-from langchain.schema import Document  # Ensure you have this import
-
-def create_vectordb(url):
-    # Assuming get_links_and_text returns a list of dictionaries with 'content' keys
-    text_dicts = get_links_and_text(url)
-    print(text_dicts)
-
-    # Convert the text into Document objects
-    documents = [Document(page_content=text_dict['content']) for text_dict in text_dicts]
-    
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1500,
-        chunk_overlap=50,
-        length_function=len,
-        is_separator_regex=False
-    )
-    docs = splitter.split_documents(documents)
-    
-    persist_directory = 'chroma_db'
-    
-    vectordb = Chroma(embedding_function= embeddings)#, persist_directory="./chroma_db")
-   
-    #vectordb = Chroma.from_documents(documents=docs, embedding=embeddings, persist_directory=persist_directory)
-    asyncio.run(add_docs(vectordb, docs))
-    
-    
-    return vectordb
-
-
-
-
-
-if __name__ == "__main__":
-    
-    url ="https://www.vendasta.com/business-app-pro/"
-
-    create_vectordb(url)
-
-   

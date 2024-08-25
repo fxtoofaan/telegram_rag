@@ -18,8 +18,15 @@ from langchain.memory import ConversationBufferWindowMemory
 from vectordbsearch_tools import VectorSearchTools_chroma
 import re
 import json
+from langchain.schema import Document  # Ensure you have this import
 
+from web_scrape import create_vectordb
 from web_scrape import get_links_and_text
+from web_search import get_links_and_text_new
+
+from langchain_chroma import Chroma
+import asyncio
+
 load_dotenv()
 
 
@@ -36,7 +43,43 @@ embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
 llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-4o-mini" ,temperature=0.1)
 
 conversations = {}
+url_vendasta ="https://www.vendasta.com/business-app-pro/"
 
+
+async def add_docs(vectordb, docs):
+    await vectordb.aadd_documents(documents=docs)
+
+
+
+@staticmethod
+def create_vectordb(url):
+    # Assuming get_links_and_text returns a list of dictionaries with 'content' keys
+    text_dicts = get_links_and_text(url)
+    print(text_dicts)
+
+    # Convert the text into Document objects
+    documents = [Document(page_content=text_dict['content']) for text_dict in text_dicts]
+    
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1500,
+        chunk_overlap=50,
+        length_function=len,
+        is_separator_regex=False
+    )
+    docs = splitter.split_documents(documents)
+    
+    persist_directory = 'chroma_db'
+    
+    vectordb = Chroma(embedding_function= embeddings)#, persist_directory="./chroma_db")
+   
+    #vectordb = Chroma.from_documents(documents=docs, embedding=embeddings, persist_directory=persist_directory)
+    asyncio.run(add_docs(vectordb, docs))
+    
+    
+    return vectordb
+
+
+create_vectordb(url_vendasta)
 
 def stand_alone(prompt, memory):
     prompt_chat = PromptTemplate(
@@ -84,7 +127,7 @@ def detect_and_scrape_url(message):
             website_text = scraped_data[url]
         else:
             print(f"\nScraping {url}")
-            website_text = get_links_and_text(url)
+            website_text = get_links_and_text_new(url)
             # Store the scraped content
             scraped_data[url] = website_text
         
@@ -121,7 +164,7 @@ def get_response(prompt, stand_alone_question, data, memory_org):
     print("\n\ntrimed memory\n")
     print(trimed_memory_cleaned)
 
-    search_keywords= f"{stand_alone_question} \n {prompt}\n {trimed_memory_cleaned}"
+    search_keywords= f"{stand_alone_question} {prompt} {trimed_memory_cleaned}"
     new_website=detect_and_scrape_url(search_keywords)
     
     prompt_chat = PromptTemplate(

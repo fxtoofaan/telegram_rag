@@ -9,6 +9,8 @@ import os
 from langchain_chroma import Chroma
 from langchain_openai.embeddings import OpenAIEmbeddings
 
+
+
 load_dotenv()
 
 OPENAI_API_KEY =  os.getenv('OPENAI_API_KEY')
@@ -44,3 +46,7 @@ class VectorSearchTools_chroma():
 if __name__ == "__main__":  
   docs = VectorSearchTools_chroma.dbsearch("what is this website about?")
   print(docs)
+  
+  
+
+  
