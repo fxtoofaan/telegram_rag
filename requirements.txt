@@ -1,0 +1,27 @@
+faiss-cpu
+python-dotenv
+openai
+gunicorn
+celery
+redis
+pyTelegramBotAPI
+SpeechRecognition
+gTTS
+pydub
+pypdf
+
+beautifulsoup4==4.12.3
+termcolor==2.4.0
+
+colorlog==6.8.2
+fake-useragent==1.5.1
+pandas
+chromadb== 0.4.14
+langchain
+tiktoken
+langchain_community
+langchain-openai
+langchain-chroma 
+
+watchdog
+psutil
