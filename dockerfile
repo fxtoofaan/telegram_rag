@@ -20,8 +20,6 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Copy .env file to the container
-COPY .env /app/.env
 
 # Expose the port the app runs on (if applicable)
 EXPOSE 8000
