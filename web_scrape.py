@@ -14,6 +14,7 @@ import asyncio
 from dotenv import load_dotenv
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai.embeddings import OpenAIEmbeddings
+from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import DirectoryLoader
@@ -22,8 +23,8 @@ import chromadb
 load_dotenv()
 OPENAI_API_KEY =  os.getenv('OPENAI_API_KEY')
 
-
-embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+#embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
 
 def get_random_user_agent():
     ua = UserAgent()

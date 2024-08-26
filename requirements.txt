@@ -22,6 +22,7 @@ tiktoken
 langchain_community
 langchain-openai
 langchain-chroma 
+langchain_huggingface
 sentence-transformers
 watchdog
 psutil
