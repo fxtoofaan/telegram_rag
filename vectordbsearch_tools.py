@@ -2,7 +2,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores.faiss import FAISS
 from langchain_community.document_loaders import DirectoryLoader
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 
 from dotenv import load_dotenv
 import os
@@ -26,9 +26,9 @@ class VectorSearchTools_chroma():
         useful to search vector database and returns most relevant chunks
         """
         # Processing PDF and DOCX files
-        #embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
+        embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
         
-        embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        #embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
         db = Chroma(embedding_function= embeddings, persist_directory="./chroma_db")
 
         

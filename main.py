@@ -40,8 +40,8 @@ bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 OPENAI_API_KEY =  os.getenv('OPENAI_API_KEY') 
 
 
-#embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
+#embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-4o-mini" ,temperature=0.1)
 
 conversations = {}
@@ -57,7 +57,7 @@ async def add_docs(vectordb, docs):
 def create_vectordb(url):
     # Assuming get_links_and_text returns a list of dictionaries with 'content' keys
     text_dicts = get_links_and_text(url)
-    print(text_dicts)
+    #print(text_dicts[])
 
     # Convert the text into Document objects
     documents = [Document(page_content=text_dict['content']) for text_dict in text_dicts]
