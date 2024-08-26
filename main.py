@@ -8,6 +8,8 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser , JsonOutputParser
 from langchain_openai import ChatOpenAI
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
 
 from dotenv import load_dotenv
 from gtts import gTTS
@@ -38,8 +40,8 @@ bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 OPENAI_API_KEY =  os.getenv('OPENAI_API_KEY') 
 
 
-embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
-
+#embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-4o-mini" ,temperature=0.1)
 
 conversations = {}
