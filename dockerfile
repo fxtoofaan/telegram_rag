@@ -24,5 +24,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Expose the port the app runs on (if applicable)
 EXPOSE 8000
 
+# Run the application
+CMD ["python", "main.py"]
+
 # Start both the bot and Streamlit app
-CMD ["sh", "-c", "streamlit run app.py & python main.py"]
+#CMD ["sh", "-c", "streamlit run app.py & python main.py"]
